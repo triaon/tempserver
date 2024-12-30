@@ -83,7 +83,7 @@ if (window.location.pathname.includes('main')) {
         // Добавляем селектор для выбора корабля
         const selectCell = document.createElement('td');
         const select = document.createElement('select');
-        const shipOptions = ['', 'Destroyer', 'Cruiser', 'Battleship', 'Carrier'];
+        const shipOptions = ['', 'Leshak', 'Absolution', 'Bhaalgorn', 'Nestor', 'Falcon','Eos Arm Links', 'Eos Skirm Links', 'Devoter', 'Damn Arm Links', 'Damn Info Links'];
   
         shipOptions.forEach(opt => {
           const option = document.createElement('option');
