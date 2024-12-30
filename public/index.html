@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Вход на сайт</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <div id="login-section">
+    <h1>Введите пароль</h1>
+    <p style="color: red;" id="error"></p>
+    <form id="loginForm" method="POST" action="/login">
+      <input type="password" name="password" id="passwordInput" placeholder="Пароль" required />
+      <button type="submit">Войти</button>
+    </form>
+  </div>
+
+  <script>
+    // Отображение ошибки, если есть
+    const urlParams = new URLSearchParams(window.location.search);
+    const errorMsg = urlParams.get('error');
+    if (errorMsg) {
+      document.getElementById('error').textContent = errorMsg;
+    }
+  </script>
+</body>
+</html>

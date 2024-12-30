@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Основная страница</title>
+  <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+  <div id="main-section">
+    <h1>Добавление пользователя</h1>
+    <input type="text" id="nameInput" placeholder="Ваше имя" />
+    <button id="nameBtn">Отправить</button>
+
+    <h2>Таблица 1 (Пользователи)</h2>
+    <button id="resetTable1Btn">Reset Table 1</button>
+    <br><br>
+    <table>
+      <thead>
+        <tr>
+          <th>Имя</th>
+          <th>Корабли</th>
+          <th>Добавить корабль</th>
+        </tr>
+      </thead>
+      <tbody id="userTableBody"></tbody>
+    </table>
+
+    <h2>Таблица 2 (Информация о кораблях)</h2>
+    <button id="resetTable2Btn">Reset Table 2</button>
+    <br><br>
+    <table>
+      <thead>
+        <tr>
+          <th>Ship</th>
+          <th>Needed</th>
+          <th>Curr Amount</th>
+        </tr>
+      </thead>
+      <tbody id="statsTableBody"></tbody>
+    </table>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/public/script.js"></script>
+</body>
+</html>
