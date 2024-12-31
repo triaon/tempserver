@@ -2,34 +2,44 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 const session = require('express-session');
-const cookieParser = require('cookie-parser'); // Правильный импорт
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Настройка парсера куки
+// Парсер куки
 app.use(cookieParser());
 
-// Настройка сессий
+// Сессии
 const sessionMiddleware = session({
   secret: 'your_secret_key', // Замените на свой секретный ключ
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: 600000 } // Время жизни сессии: 10 минут
+  cookie: { maxAge: 600000 } // 10 минут
 });
-
 app.use(sessionMiddleware);
 
-// Задаём пароль для доступа
+// Пароль для доступа
 const SECRET_PASSWORD = '12345';
 
 // Первая таблица: пользователи
 let userList = [];
 
-// Вторая таблица: информация о кораблях (Needed и текущий подсчёт)
-const SHIP_OPTIONS = ['Destroyer', 'Cruiser', 'Battleship', 'Carrier'];
+/*
+  Важно! Добавьте сюда все корабли, которые нужны.
+  Например: Nestor, Painter, Vindicator, Bonus (Armor),
+           Cap Truck, HD, Leshak, Bonus (Info),
+           DPS, DPS (BC), Widow, Bonus (Skirm).
+*/
+const SHIP_OPTIONS = [
+  'Nestor', 'Painter', 'Vindicator', 'Bonus (Armor)',
+  'Cap Truck', 'HD', 'Leshak', 'Bonus (Info)',
+  'DPS', 'DPS (BC)', 'Widow', 'Bonus (Skirm)'
+];
+
+// Вторая таблица: информация о кораблях
 let shipsData = {};
 
 // Инициализация shipsData
@@ -44,17 +54,18 @@ function initShipsData() {
 }
 initShipsData();
 
-// Подсчёт текущих значений для shipsData.amount
+// Подсчёт текущих значений shipsData.amount
 function recalcShipAmounts() {
-  // Обнуляем перед новым расчётом
-  for (const ship of SHIP_OPTIONS) {
+  // Обнуляем
+  for (const ship in shipsData) {
     shipsData[ship].amount = 0;
   }
-
-  // Перебираем всех пользователей и считаем, сколько каких кораблей выбрано
+  // Перебираем всех пользователей
   userList.forEach(user => {
     user.ships.forEach(ship => {
-      if (ship && shipsData[ship]) shipsData[ship].amount++;
+      if (ship && shipsData[ship]) {
+        shipsData[ship].amount++;
+      }
     });
   });
 }
@@ -69,13 +80,10 @@ function authMiddleware(req, res, next) {
 }
 
 // Маршруты
-
-// Главная страница входа
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Обработка проверки пароля
 app.post('/login', express.urlencoded({ extended: true }), (req, res) => {
   const { password } = req.body;
   if (password === SECRET_PASSWORD) {
@@ -86,22 +94,21 @@ app.post('/login', express.urlencoded({ extended: true }), (req, res) => {
   }
 });
 
-// Защищённая основная страница
 app.get('/main', authMiddleware, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'main.html'));
 });
 
-// Подключение статических файлов
+// Статические файлы
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
 // Интеграция сессий с Socket.IO
 io.use((socket, next) => {
   const req = socket.request;
   const res = req.res || {};
-
   sessionMiddleware(req, res, next);
 });
 
+// Socket.IO
 io.on('connection', (socket) => {
   const req = socket.request;
   if (!req.session || !req.session.authenticated) {
@@ -118,7 +125,7 @@ io.on('connection', (socket) => {
     shipsData
   });
 
-  // Обработка события нового пользователя
+  // Новый пользователь
   socket.on('newUser', (userName) => {
     console.log(`Новый пользователь: ${userName}`);
     const newEntry = {
@@ -131,7 +138,7 @@ io.on('connection', (socket) => {
     io.emit('updateShipsData', shipsData);
   });
 
-  // Обработка события обновления корабля
+  // Обновление корабля (добавление)
   socket.on('updateShip', (data) => {
     console.log(`Обновление корабля: ${JSON.stringify(data)}`);
     const user = userList.find(u => u.name === data.name);
@@ -143,7 +150,19 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Обработка события обновления "Needed"
+  // Удаление корабля
+  socket.on('removeShip', (data) => {
+    console.log(`Удаление корабля: ${JSON.stringify(data)}`);
+    const user = userList.find(u => u.name === data.name);
+    if (user) {
+      user.ships = user.ships.filter(ship => ship !== data.shipValue);
+      recalcShipAmounts();
+      io.emit('updateTable', userList);
+      io.emit('updateShipsData', shipsData);
+    }
+  });
+
+  // Обновление Needed
   socket.on('updateNeeded', (data) => {
     console.log(`Обновление Needed: ${JSON.stringify(data)}`);
     const { ship, neededValue } = data;
@@ -153,7 +172,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Обработка сброса Таблицы 1
+  // Сброс Таблицы 1
   socket.on('resetTable1', () => {
     console.log('Сброс Таблицы 1');
     userList = [];
@@ -162,7 +181,7 @@ io.on('connection', (socket) => {
     io.emit('updateShipsData', shipsData);
   });
 
-  // Обработка сброса Таблицы 2
+  // Сброс Таблицы 2
   socket.on('resetTable2', () => {
     console.log('Сброс Таблицы 2');
     initShipsData();

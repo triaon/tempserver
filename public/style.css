@@ -1,53 +1,169 @@
+/* ----------------
+   Общие стили
+---------------- */
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #f5f5f5;
-  }
-  
-  #login-section,
-  #main-section {
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  h1, h2 {
-    margin-top: 0;
-  }
-  
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 800px;
-    margin-top: 10px;
-  }
-  
-  th, td {
-    border: 1px solid #ccc;
-    padding: 8px;
-    text-align: center;
-  }
-  
-  select, input[type="number"], input[type="password"], input[type="text"] {
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 14px;
-    padding: 4px;
-  }
-  
-  button {
-    padding: 8px 16px;
-    font-size: 14px;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #ddd;
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #121212; /* Тёмный фон */
+  color: #e0e0e0;      /* Светлый текст */
+}
+
+#login-section,
+#main-section {
+  background: #1e1e1e; /* Тёмный фон для секций */
+  padding: 20px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+h1, h2 {
+  margin-top: 0;
+  color: #ffffff;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 10px;
+  background: #1e1e1e;
+  color: #e0e0e0;
+}
+
+th, td {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: center;
+  vertical-align: top;
+}
+
+select, input[type="number"], input[type="password"], input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 14px;
+  padding: 4px;
+  background: #222;
+  color: #e0e0e0;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 14px;
+  margin-top: 10px;
+  cursor: pointer;
+  background-color: #333;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  border-radius: 4px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+  background-color: #444;
+  color: #ffffff;
+}
+
+/* ----------------
+ Первая таблица (Пользователи)
+---------------- */
+
+/* Крестик удаления корабля */
+.remove-ship-btn {
+  background: transparent;
+  border: none;
+  color: #ff4d4d;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  transition: color 0.3s;
+}
+.remove-ship-btn:hover {
+  color: #ff0000;
+}
+
+.ship-wrapper {
+  display: inline-flex;
+  align-items: center;
+  background-color: #222;
+  border-radius: 4px;
+  padding: 2px 6px;
+  gap: 4px;
+}
+.ship-name {
+  margin-right: 4px;
+  color: #e0e0e0;
+}
+
+/* ----------------
+ Вторая таблица (Зонная)
+---------------- */
+
+/* Контейнер для зонной таблицы */
+#statsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Отступ между "зонами" */
+}
+
+/* Общий стиль зоны */
+.zone-wrapper {
+  border-radius: 20px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* Строка внутри зоны */
+.zone-row {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Ячейка внутри строки */
+.zone-cell {
+  flex: 1;
+  text-align: center;
+  padding: 5px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Шапка зоны (Ship, Amount, Need) */
+.zone-header {
+  font-weight: bold;
+}
+.zone-header-cell {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Сокращение ширины поля Need, если хотите */
+.need-input {
+  width: 60px;
+  text-align: center;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+}
+
+/* Цвета для трёх зон */
+.pink-zone {
+  background-color: #b30000; /* Розово-красный фон */
+}
+.yellow-zone {
+  background-color: #777700; /* Темно-жёлтый */
+}
+.green-zone {
+  background-color: #006600; /* Тёмно-зелёный */
+}
